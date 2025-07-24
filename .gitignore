@@ -1,0 +1,85 @@
+# Maven target directory
+target/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+.idea_modules/
+
+# Eclipse
+.settings/
+.project
+.classpath
+*.launch
+
+# VS Code
+.vscode/
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+bin/
+doc/
+.DS_Store
+
+# Maven
+.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Redis dump file
+dump.rdb
+
+# H2 database files
+*.h2.db
+*.mv.db
+*.trace.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# JAR files (except for the final packaged application)
+*.jar
+!target/*.jar
+
+# Class files
+*.class
+
+# Package files
+*.war
+*.ear
+
+# Spring Boot
+.springBeans
+
+# STS
+.apt_generated
+.sts4-cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Test coverage
+.jacoco/

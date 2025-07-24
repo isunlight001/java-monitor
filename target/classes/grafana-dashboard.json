@@ -1,0 +1,54 @@
+{
+  "__inputs": [],
+  "__requires": [],
+  "annotations": {"list": []},
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 162,
+  "links": [],
+  "panels": [
+    {
+      "type": "text",
+      "title": "RTO/RPO 倒计时",
+      "gridPos": {"x": 0, "y": 0, "w": 24, "h": 2},
+      "options": {"content": "<div style='font-size:2.5em;color:#00ffe7;background:#001f3f;text-align:center;'>RTO: <b>00:00:12</b> | RPO: <b>00:00:30</b></div>", "mode": "html"}
+    },
+    {
+      "type": "text",
+      "title": "3D 单元地球热力图",
+      "gridPos": {"x": 0, "y": 2, "w": 6, "h": 10},
+      "options": {"content": "<div style='height:100%;background:#001f3f;color:#00ffe7;text-align:center;line-height:10em;'>[3D 地球热力图占位]</div>", "mode": "html"}
+    },
+    {
+      "type": "text",
+      "title": "黄金四象限",
+      "gridPos": {"x": 6, "y": 2, "w": 12, "h": 10},
+      "options": {"content": "<div style='height:100%;background:#001f3f;color:#00ffe7;text-align:center;line-height:10em;'>[Latency/Traffic/Error/Saturation]</div>", "mode": "html"}
+    },
+    {
+      "type": "text",
+      "title": "链路火焰图",
+      "gridPos": {"x": 18, "y": 2, "w": 6, "h": 10},
+      "options": {"content": "<div style='height:100%;background:#001f3f;color:#00ffe7;text-align:center;line-height:10em;'>[火焰图占位]</div>", "mode": "html"}
+    },
+    {
+      "type": "text",
+      "title": "滚动告警条",
+      "gridPos": {"x": 0, "y": 12, "w": 24, "h": 2},
+      "options": {"content": "<div style='font-size:1.5em;color:#ff4d4f;background:#001f3f;text-align:center;'>[告警条占位]</div>", "mode": "html"}
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 30,
+  "style": "dark",
+  "tags": ["4K","HUD","分布式监控"],
+  "templating": {"list": []},
+  "time": {"from": "now-6h", "to": "now"},
+  "timepicker": {},
+  "timezone": "",
+  "title": "分布式单元化监控大屏",
+  "uid": null,
+  "version": 1
+}

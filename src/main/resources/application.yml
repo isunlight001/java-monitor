@@ -1,11 +1,15 @@
 server:
   port: 8080
+
 spring:
+  # 数据库配置
   datasource:
     url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
     username: sa
     password: ""
+    
+  # JPA配置
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
@@ -14,6 +18,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        
+  # Redis配置
   redis:
     host: localhost
     port: 6379
@@ -22,11 +28,16 @@ spring:
         max-active: 8
         max-idle: 8
         min-idle: 0
+        
+  # 缓存类型
   cache:
     type: redis
-  
+
+# 应用名称
 application:
   name: java-monitor
+  
+# 监控配置
 management:
   endpoints:
     web:
@@ -34,7 +45,16 @@ management:
         include: '*'
   metrics:
     tags:
-      unit_id: ${unit.id:U01}
+      unit_id: ${unit.id:U01}  # 默认单元ID为U01，可通过启动参数修改
   endpoint:
     prometheus:
       enabled: true
+
+# 启动延迟配置
+app:
+  startup:
+    delay:
+      # 是否启用启动延迟模拟
+      enabled: false
+      # 延迟时间（毫秒）
+      duration: 65000

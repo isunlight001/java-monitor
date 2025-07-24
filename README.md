@@ -29,6 +29,10 @@
 - **自动告警规则生成**：
   - 根据业务特点自动生成 Prometheus 告警规则
 
+- **启动时间模拟**：
+  - 支持模拟应用启动时间过长场景
+  - 可配置开关控制是否启用延迟
+
 ## 技术架构
 
 - **后端框架**：Spring Boot 2.7.18
@@ -140,6 +144,15 @@ management:
   endpoint:
     prometheus:
       enabled: true
+
+# 启动延迟配置（用于模拟启动时间过长）
+app:
+  startup:
+    delay:
+      # 是否启用启动延迟模拟
+      enabled: false
+      # 延迟时间（毫秒），默认65秒（超过60秒）
+      duration: 65000
 ```
 
 ## 开发指南
@@ -172,6 +185,24 @@ mvn spring-boot:run -Dspring-boot.run.arguments=--unit.id=UNIT02
 
 ```bash
 mvn test
+```
+
+### 模拟启动时间过长
+
+要模拟应用启动时间过长（超过60秒）的情况，可以修改配置文件中的启动延迟设置：
+
+```yaml
+app:
+  startup:
+    delay:
+      enabled: true
+      duration: 65000  # 65秒
+```
+
+或者在启动时通过命令行参数指定：
+
+```bash
+mvn spring-boot:run -Dspring-boot.run.arguments="--app.startup.delay.enabled=true --app.startup.delay.duration=65000"
 ```
 
 ---

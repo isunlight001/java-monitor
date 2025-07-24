@@ -2,6 +2,7 @@ package com.acme.monitor.cache;
 
 import com.acme.monitor.config.CacheConfig;
 import com.acme.monitor.config.TwoLevelCache;
+import com.acme.monitor.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.cache.Cache;

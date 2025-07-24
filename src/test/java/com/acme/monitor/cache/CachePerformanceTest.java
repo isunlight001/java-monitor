@@ -29,25 +29,25 @@ public class CachePerformanceTest {
         User user;
 
         // 第一次访问，从数据库加载
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
         user = userService.getUserById(1L);
-        endTime = System.currentTimeMillis();
+        endTime = System.nanoTime();
         long firstAccessTime = endTime - startTime;
-        logger.info("First access time: {} ms", firstAccessTime);
+        logger.info("First access time: {} ns", firstAccessTime);
 
         // 后续访问，从缓存加载
-        startTime = System.currentTimeMillis();
+        startTime = System.nanoTime();
         user = userService.getUserById(1L);
-        endTime = System.currentTimeMillis();
+        endTime = System.nanoTime();
         long cachedAccessTime = endTime - startTime;
-        logger.info("Cached access time: {} ms", cachedAccessTime);
+        logger.info("Cached access time: {} ns", cachedAccessTime);
 
         // 验证缓存访问明显更快
         assertTrue(cachedAccessTime < firstAccessTime, 
             "Cached access should be faster than database access");
         
-        // 缓存访问应该非常快（小于10ms）
-        assertTrue(cachedAccessTime < 10, 
+        // 缓存访问应该非常快（小于10000000ns，即10ms）
+        assertTrue(cachedAccessTime < 10000000, 
             "Cached access should be very fast (< 10ms)");
     }
 

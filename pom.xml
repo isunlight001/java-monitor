@@ -91,12 +91,32 @@
             <groupId>com.github.ben-manes.caffeine</groupId>
             <artifactId>caffeine</artifactId>
         </dependency>
+        
+        <!-- MyPerf4J 性能监控 -->
+        <!-- 由于网络问题，需要手动下载MyPerf4J-ASM-3.2.0.jar到lib目录 -->
+        <!--
+        <dependency>
+            <groupId>cn.myperf4j</groupId>
+            <artifactId>MyPerf4J-ASM</artifactId>
+            <version>3.2.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/MyPerf4J-ASM.jar</systemPath>
+        </dependency>
+        -->
     </dependencies>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <!-- MyPerf4J集成说明：需要在启动时添加JVM参数 -->
+                <!--
+                <configuration>
+                    <jvmArguments>
+                        -javaagent:lib/MyPerf4J-ASM.jar -DMyPerf4JPropFile=src/main/resources/myPerf4J.properties
+                    </jvmArguments>
+                </configuration>
+                -->
             </plugin>
         </plugins>
     </build>

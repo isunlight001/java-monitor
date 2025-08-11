@@ -59,6 +59,11 @@ java -jar target/java-monitor-1.0.0.jar
 - 最慢的前N个Bean: http://localhost:8000/api/monitor/bean/top
 - 最慢的前N个Bean(自定义数量): http://localhost:8000/api/monitor/bean/top?topN=20
 
+### Bean详细信息端点
+
+- 所有Bean详细信息: http://localhost:8000/api/monitor/bean/details/all
+- 特定Bean详细信息: http://localhost:8000/api/monitor/bean/details/{beanName}
+
 ## Bean初始化阶段耗时监控
 
 本系统提供详细的Bean初始化阶段耗时监控功能，可以分别监控Bean在不同阶段的耗时情况：
@@ -75,6 +80,21 @@ Bean myService total init cost: 75ms (beforeInit: 30ms, afterInit: 45ms)
 ```
 
 在应用关闭时，系统还会打印所有Bean的初始化耗时汇总信息，便于分析启动性能瓶颈。
+
+## Bean初始化操作分析
+
+系统还能分析Bean初始化过程中执行的具体操作，包括：
+
+1. **@PostConstruct注解方法**：标记了@PostConstruct注解的方法
+2. **InitializingBean接口**：实现了InitializingBean接口的Bean及其afterPropertiesSet()方法
+3. **类信息**：Bean的类名、字段数量、方法数量等基本信息
+
+这些信息有助于定位Bean初始化时具体执行了哪些操作，从而找出性能瓶颈的根本原因。
+
+详细信息示例：
+```
+Bean myService initialization operations: [PostConstruct method: init, InitializingBean.afterPropertiesSet(), Class: com.example.MyService, Fields count: 5, Methods count: 12]
+```
 
 ## MyPerf4J性能监控集成
 

@@ -51,6 +51,14 @@ java -jar target/java-monitor-1.0.0.jar
 - 指标监控: http://localhost:8000/actuator/prometheus
 - 其他 Actuator 端点: http://localhost:8000/actuator
 
+### Bean初始化监控端点
+
+- 所有Bean初始化时间: http://localhost:8000/api/monitor/bean/all
+- 慢Bean列表(默认50ms以上): http://localhost:8000/api/monitor/bean/slow
+- 慢Bean列表(自定义阈值): http://localhost:8000/api/monitor/bean/slow?thresholdMs=100
+- 最慢的前N个Bean: http://localhost:8000/api/monitor/bean/top
+- 最慢的前N个Bean(自定义数量): http://localhost:8000/api/monitor/bean/top?topN=20
+
 ## MyPerf4J性能监控集成
 
 本项目已集成MyPerf4J性能监控工具，用于监控应用启动过程中的性能瓶颈。

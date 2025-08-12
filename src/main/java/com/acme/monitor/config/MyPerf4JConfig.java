@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
  * 用于集成MyPerf4J性能监控工具与Spring Boot Actuator
  * MyPerf4J是一个针对高并发、低延迟应用设计的高性能Java性能监控和统计工具
  */
-@Configuration
+//@Configuration
 public class MyPerf4JConfig {
     
     /**

@@ -64,6 +64,12 @@ java -jar target/java-monitor-1.0.0.jar
 - 所有Bean详细信息: http://localhost:8000/api/monitor/bean/details/all
 - 特定Bean详细信息: http://localhost:8000/api/monitor/bean/details/{beanName}
 
+### 未使用Bean检测端点
+
+- 所有Bean列表: http://localhost:8000/api/monitor/beans/all
+- 可能未使用的Bean: http://localhost:8000/api/monitor/beans/unused
+- 可能的孤儿Bean: http://localhost:8000/api/monitor/beans/orphans
+
 ## Bean初始化阶段耗时监控
 
 本系统提供详细的Bean初始化阶段耗时监控功能，可以分别监控Bean在不同阶段的耗时情况：
@@ -96,6 +102,38 @@ Bean myService total init cost: 75ms (beforeInit: 30ms, afterInit: 45ms)
 Bean myService initialization operations: [PostConstruct method: init, InitializingBean.afterPropertiesSet(), Class: com.example.MyService, Fields count: 5, Methods count: 12]
 ```
 
+## 未使用Bean检测
+
+系统新增了检测未使用Bean的功能，可以帮助识别Spring容器中可能无用的组件。这些组件可能是项目演进过程中遗留下来的，占用内存和启动时间。
+
+### 检测原理
+
+1. **未使用Bean**：指没有被其他Bean依赖的Bean，即入度为0的Bean
+2. **孤儿Bean**：指既没有被其他Bean依赖，自身也没有依赖其他Bean的Bean
+
+### 使用方法
+
+通过以下REST API端点可以获取相关信息：
+
+1. `GET /api/monitor/beans/all` - 获取所有Bean列表
+2. `GET /api/monitor/beans/unused` - 获取可能未使用的Bean列表
+3. `GET /api/monitor/beans/orphans` - 获取可能的孤儿Bean列表
+
+### 分析建议
+
+检测到的未使用Bean需要进一步人工分析确认：
+
+1. 某些Bean可能是通过名称动态获取的，不会在依赖关系中体现
+2. 某些Bean可能是为了扩展性而预先注册的组件
+3. 某些Bean可能在特定条件下才会被使用
+4. 某些Bean可能是测试或调试用途的组件
+
+建议结合业务逻辑和代码分析来判断这些Bean是否真的无用，再决定是否移除。
+
+### 清除无用Bean
+
+关于如何清除无用Bean以加快应用启动时间，请参考详细指南：[清除无用Bean指南](docs/unused-beans-removal-guide.md)
+
 ## MyPerf4J性能监控集成
 
 本项目已集成MyPerf4J性能监控工具，用于监控应用启动过程中的性能瓶颈。
@@ -126,6 +164,18 @@ mkdir lib
 wget https://github.com/LinShunKang/MyPerf4J/releases/download/v3.2.0/MyPerf4J-ASM-3.2.0.jar -O lib/MyPerf4J-ASM.jar
 ```
 
+下载完成后，取消pom.xml中关于MyPerf4J依赖的注释：
+
+```xml
+<dependency>
+    <groupId>cn.myperf4j</groupId>
+    <artifactId>MyPerf4J-ASM</artifactId>
+    <version>3.2.0</version>
+    <scope>system</scope>
+    <systemPath>${project.basedir}/lib/MyPerf4J-ASM.jar</systemPath>
+</dependency>
+```
+
 ### 配置说明
 
 MyPerf4J配置文件位于: `src/main/resources/myPerf4J.properties`
@@ -133,18 +183,49 @@ MyPerf4J配置文件位于: `src/main/resources/myPerf4J.properties`
 主要配置项:
 - app_name: 应用名称
 - metrics.log.method.file: 方法级别监控指标日志文件路径
-- filter.packages.include: 需要监控的包前缀
-- metrics.time_slice.threshold: 统计时间片（秒）
+- filter.packages.include: 需要监控的包前缀，当前配置为只监控本项目相关类
+- metrics.time_slice.threshold: 统计时间片（秒），默认为10秒
 
 ### 启动时集成
 
-MyPerf4J通过JVM参数-javaagent方式集成:
+MyPerf4J通过JVM参数-javaagent方式集成。有两种启动方式：
+
+#### 方式一：使用Maven插件启动（推荐开发环境使用）
+
+取消pom.xml中spring-boot-maven-plugin插件配置的注释：
+
+```xml
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <!-- MyPerf4J集成说明：需要在启动时添加JVM参数 -->
+    <configuration>
+        <jvmArguments>
+            -javaagent:lib/MyPerf4J-ASM.jar -DMyPerf4JPropFile=src/main/resources/myPerf4J.properties
+        </jvmArguments>
+    </configuration>
+</plugin>
+```
+
+然后使用标准的Maven命令启动：
+
+```bash
+mvn spring-boot:run
+```
+
+#### 方式二：使用java命令启动（推荐生产环境使用）
+
+编译项目：
+
+```bash
+mvn clean package
+```
+
+使用java命令启动应用：
 
 ```bash
 java -javaagent:lib/MyPerf4J-ASM.jar -DMyPerf4JPropFile=src/main/resources/myPerf4J.properties -jar target/java-monitor-1.0.0.jar
 ```
-
-在使用Maven插件启动时，需要取消pom.xml中的注释并配置正确的参数。
 
 ### 查看监控数据
 
@@ -160,15 +241,29 @@ DemoServiceImpl.getId2(long)      General      Service      322.50%     6524    
 DemoServiceImpl.getId3(long)      General      Service      296.10%     4350     0.68        0        1     0.47      4350        1        1        1        1        1        1
 ```
 
-监控指标说明:
+字段说明：
+- Method: 被监控的方法名
+- Type: 方法类型
+- Level: 方法层级
+- TimePercent: 时间占比
 - RPS: 每秒请求数
-- Avg: 平均响应时间(ms)
-- Min: 最小响应时间(ms)
-- Max: 最大响应时间(ms)
-- TP50-TP9999: 不同百分位的响应时间
+- Avg(ms): 平均响应时间(毫秒)
+- Min(ms): 最小响应时间(毫秒)
+- Max(ms): 最大响应时间(毫秒)
+- StdDev: 响应时间标准差
 - Count: 调用次数
+- TP50/TP90/TP95/TP99/TP999/TP9999: 不同百分位的响应时间
 
-通过分析这些数据，可以快速定位应用启动过程中的性能瓶颈。
+### MyPerf4J在本项目中的作用
+
+在本项目中，MyPerf4J主要用于监控以下方面：
+1. Bean初始化过程中的性能表现
+2. 各种监控切面的执行耗时
+3. 缓存操作的性能指标
+4. 数据库操作的响应时间
+5. 应用启动过程中的方法调用性能
+
+通过这些监控数据，可以帮助开发者识别性能瓶颈，优化代码执行效率。
 
 ## 目录结构
 

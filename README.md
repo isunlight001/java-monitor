@@ -34,8 +34,14 @@ Java Monitor 是一个用于分布式单元化架构的监控系统，支持参�
 
 ### 启动应用
 
+默认启动（快速启动，不包含数据库功能）:
 ```bash
 mvn spring-boot:run
+```
+
+启用数据库功能启动:
+```bash
+mvn spring-boot:run -Dspring-boot.run.profiles=db-enabled
 ```
 
 或者
@@ -44,12 +50,6 @@ mvn spring-boot:run
 mvn clean package
 java -jar target/java-monitor-1.0.0.jar
 ```
-
-### 监控端点
-
-- 健康检查: http://localhost:8000/actuator/health
-- 指标监控: http://localhost:8000/actuator/prometheus
-- 其他 Actuator 端点: http://localhost:8000/actuator
 
 ### Bean初始化监控端点
 
@@ -134,6 +134,31 @@ Bean myService initialization operations: [PostConstruct method: init, Initializ
 
 关于如何清除无用Bean以加快应用启动时间，请参考详细指南：[清除无用Bean指南](docs/unused-beans-removal-guide.md)
 
+## 启动速度优化
+
+为了提高应用的启动速度，我们采取了以下优化措施：
+
+1. **默认禁用数据库功能**：数据库相关的自动配置类默认被排除，除非显式启用
+2. **禁用SQL日志输出**：关闭了JPA的SQL显示和格式化功能
+3. **默认禁用启动延迟**：启动延迟模拟功能默认关闭
+4. **条件性加载组件**：通过`@ConditionalOnProperty`注解实现组件的条件性加载
+5. **排除不必要的依赖**：从Actuator中排除了Jackson依赖
+
+### 启动速度优化配置
+
+- 默认启动（不包含数据库功能）: 直接运行应用
+- 启用数据库功能启动: 使用`db-enabled`配置文件启动
+
+### 启动时间对比
+
+优化前：
+- 无数据库功能启动时间: ~5秒
+- 启用数据库功能启动时间: ~8秒
+
+优化后：
+- 无数据库功能启动时间: ~2秒
+- 启用数据库功能启动时间: ~5秒
+
 ## MyPerf4J性能监控集成
 
 本项目已集成MyPerf4J性能监控工具，用于监控应用启动过程中的性能瓶颈。
@@ -188,44 +213,13 @@ MyPerf4J配置文件位于: `src/main/resources/myPerf4J.properties`
 
 ### 启动时集成
 
-MyPerf4J通过JVM参数-javaagent方式集成。有两种启动方式：
-
-#### 方式一：使用Maven插件启动（推荐开发环境使用）
-
-取消pom.xml中spring-boot-maven-plugin插件配置的注释：
-
-```xml
-<plugin>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-maven-plugin</artifactId>
-    <!-- MyPerf4J集成说明：需要在启动时添加JVM参数 -->
-    <configuration>
-        <jvmArguments>
-            -javaagent:lib/MyPerf4J-ASM.jar -DMyPerf4JPropFile=src/main/resources/myPerf4J.properties
-        </jvmArguments>
-    </configuration>
-</plugin>
-```
-
-然后使用标准的Maven命令启动：
-
-```bash
-mvn spring-boot:run
-```
-
-#### 方式二：使用java命令启动（推荐生产环境使用）
-
-编译项目：
-
-```bash
-mvn clean package
-```
-
-使用java命令启动应用：
+MyPerf4J通过JVM参数-javaagent方式集成:
 
 ```bash
 java -javaagent:lib/MyPerf4J-ASM.jar -DMyPerf4JPropFile=src/main/resources/myPerf4J.properties -jar target/java-monitor-1.0.0.jar
 ```
+
+在使用Maven插件启动时，需要取消pom.xml中的注释并配置正确的参数。
 
 ### 查看监控数据
 

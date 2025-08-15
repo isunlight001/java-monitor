@@ -1,6 +1,7 @@
 package com.acme.monitor.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -9,6 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @RestController
+@ConditionalOnProperty(name = "app.database.enabled", havingValue = "true", matchIfMissing = false)
 public class DatabaseTestController {
 
     @Autowired

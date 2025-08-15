@@ -14,10 +14,10 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
         
   # Redis配置
   redis:
@@ -57,4 +57,7 @@ app:
       # 是否启用启动延迟模拟
       enabled: false
       # 延迟时间（毫秒）
-      duration: 10
+      duration: 0
+  # 是否启用数据库功能
+  database:
+    enabled: false

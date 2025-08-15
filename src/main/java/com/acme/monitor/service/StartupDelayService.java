@@ -26,7 +26,8 @@ public class StartupDelayService {
      */
     @PostConstruct
     public void initialize() {
-//        if (startupDelayConfig.isEnabled()) {
+        // 只有在启用延迟且延迟时间大于0时才执行延迟逻辑
+        if (startupDelayConfig.isEnabled() && startupDelayConfig.getDuration() > 0) {
             logger.info("开始模拟应用启动延迟，延迟时间: {} ms", startupDelayConfig.getDuration());
             
             try {
@@ -37,8 +38,8 @@ public class StartupDelayService {
                 logger.warn("启动延迟过程中被中断", e);
                 Thread.currentThread().interrupt();
             }
-//        } else {
-//            logger.info("启动延迟未启用，跳过模拟延迟");
-//        }
+        } else {
+            logger.debug("启动延迟未启用或延迟时间为0，跳过模拟延迟");
+        }
     }
 }

@@ -83,4 +83,4 @@ dump.rdb
 .env.*.local
 
 # Test coverage
-.jacoco/
+.jacoco/!/src/main/resources/.JavaMonitor_SysGenProfilingFile_tmp

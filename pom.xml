@@ -70,11 +70,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
@@ -98,7 +93,6 @@
 
         <!-- MyPerf4J 性能监控 -->
         <!-- 由于网络问题，需要手动下载MyPerf4J-ASM-3.2.0.jar到lib目录 -->
-        <!--
         <dependency>
             <groupId>cn.myperf4j</groupId>
             <artifactId>MyPerf4J-ASM</artifactId>
@@ -106,21 +100,19 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/MyPerf4J-ASM.jar</systemPath>
         </dependency>
-        -->
     </dependencies>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
                 <!-- MyPerf4J集成说明：需要在启动时添加JVM参数 -->
-                <!--
                 <configuration>
                     <jvmArguments>
                         -javaagent:lib/MyPerf4J-ASM.jar -DMyPerf4JPropFile=src/main/resources/myPerf4J.properties
                     </jvmArguments>
                 </configuration>
-                -->
             </plugin>
         </plugins>
     </build>

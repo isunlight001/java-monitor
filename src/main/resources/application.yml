@@ -57,4 +57,4 @@ app:
       # 是否启用启动延迟模拟
       enabled: false
       # 延迟时间（毫秒）
-      duration: 15000
+      duration: 10
